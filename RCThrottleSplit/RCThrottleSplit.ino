@@ -144,20 +144,21 @@ void calculate() {
   if (CH2REVERSE) {
     ch2 = 3000 - CH2pulse;
   }
-  
-  ch3 = map(ch2,NEUTRAL,2000,1000,2000);
+  int mixer = map(ch3,928,1080,0,1000);
+  mixer = constrain(mixer, 0, 1000);
+  ch3 = map(ch2,NEUTRAL,2000,1000,1000+mixer);
   
   if (CH3REVERSE) {
     ch3 = 3000 - ch3;
   }
   ch2 = constrain(ch2, 800, 2200);
   ch3 = constrain(ch3, 1000, 2000);
-  CH2out = ch2;
+  CH2out = CH2pulse;
   CH3out = ch3;
 }
 void sendServo() {
-  pulseOut(CH2outpin, 1000);
-  pulseOut(CH3outpin, CH3pulse);
+  pulseOut(CH2outpin, CH2out);
+  pulseOut(CH3outpin, CH3out);
 }
 
 void EEPROMWritelong(int address, long value)      {

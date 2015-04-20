@@ -65,6 +65,16 @@ sliderCH3out.set(103)
 # Create the "Toolbar" contents of the page.
 group = Pmw.Group(page, tag_text = 'Settings')
 group.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
+
+sliderNeutralLabelvar = StringVar()
+sliderNeutralLabel = Label( group.interior(), textvariable=sliderNeutralLabelvar, relief=RAISED )
+sliderNeutralLabelvar.set("Neutral point")
+sliderNeutralLabel.pack()
+
+sliderNeutral = Scale(group.interior(), from_=800, to=2200, orient=HORIZONTAL)
+sliderNeutral.pack()
+sliderNeutral.set(103)
+
 # Create first button
 CH2ReverseVar = IntVar()
 CH2ReverseButton = Checkbutton(group.interior(), text = 'CH2 Reverse', variable=CH2ReverseVar)
@@ -77,7 +87,8 @@ CH3ReverseButton.pack()
 #// Buttons
 def saveButtonCallBack():
    print("savebutton")
-   outstring = "test$save:\n "+str(1500)+" \n "+ str(0) +" \n "+ str(0) +" \n"
+   outstring = "test$save:\n  "+str(sliderNeutral.get())+" \n "+ str(CH2ReverseVar.get()) +" \n "+ str(CH3ReverseVar.get()) +" \n"
+   print(outstring)
    ser.write(outstring.encode('utf-8'))
 
 saveButton = Button(group.interior(), text ="Save", command = saveButtonCallBack)
@@ -122,10 +133,13 @@ def serialLoop():
 		print("found LOAD")
 		print(line)
 		s = linetemp[linetemp.find("LOAD:")+5:];
-		[x.strip() for x in s.split(',')]
+		s = s.split(',')
 		print(s[0])
+		sliderNeutral.set(int(s[0]))
 		print(s[1])
+		CH2ReverseVar.set(int(s[1]))
 		print(s[2])
+		CH3ReverseVar.set(int(s[2]))
 		print(s[3])
 	else :
 		print(line)
