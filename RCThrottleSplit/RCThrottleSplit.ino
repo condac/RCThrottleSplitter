@@ -100,7 +100,7 @@ void loop() {
   Serial.println(CH2out);
   Serial.print("CH3out: ");    
   Serial.println(CH3out);
-  delay(1000);
+  delay(100);
 } 
 
 void pulseOut(int pin, int us) {
@@ -145,9 +145,15 @@ void calculate() {
     ch2 = 3000 - CH2pulse;
   }
   
+  ch3 = map(ch2,NEUTRAL,2000,1000,2000);
   
+  if (CH3REVERSE) {
+    ch3 = 3000 - ch3;
+  }
+  ch2 = constrain(ch2, 800, 2200);
+  ch3 = constrain(ch3, 1000, 2000);
   CH2out = ch2;
-  CH3out = (1000 - (CH2pulse - 1000))+1000;
+  CH3out = ch3;
 }
 void sendServo() {
   pulseOut(CH2outpin, 1000);
